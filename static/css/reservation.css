@@ -1,0 +1,208 @@
+/* Réinitialisation des styles par défaut */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Styles spécifiques à la page de réservation */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+.container {
+    max-width: 1200px; /* Largeur maximale du contenu */
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h3 {
+    margin-bottom: 15px;
+}
+
+.forms-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px; /* Espacement entre les formulaires */
+    border: 1px solid #ccc; /* Encadrement autour des formulaires */
+    padding: 15px;
+    border-radius: 5px;
+}
+
+/* Style des formulaires */
+form {
+    width: 48%; /* Largeur des formulaires, ajustez selon votre besoin */
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="date"],
+input[type="number"],
+select {
+    width: 100%; /* Largeur du champ avec 100% de la largeur disponible */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    margin-bottom: 10px; /* Espacement entre les champs */
+}
+
+input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Style de la barre de recherche */
+.search-container {
+    margin-bottom: 20px;
+    border-bottom: 1px solid #ccc; /* Ligne de séparation */
+    padding-bottom: 10px;
+}
+
+#searchInput {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.search-results {
+    margin-top: 10px;
+}
+
+.search-result {
+    padding: 10px;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+}
+
+.search-result p {
+    margin-bottom: 5px;
+}
+
+.search-result button {
+    padding: 8px 12px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+    margin-top: 5px;
+}
+
+.search-result button:hover {
+    background-color: #45a049;
+}
+
+/* Style des informations client sélectionné */
+.selected-client-info {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    line-height: 1.5; /* Espacement entre les lignes */
+}
+
+/* Style des réservations futures */
+.future-reservations {
+    max-height: 300px; /* Hauteur maximale pour la liste des réservations */
+    overflow-y: auto; /* Activer le défilement vertical si nécessaire */
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+/* Media query pour ajuster la mise en page sur des écrans plus petits */
+@media (max-width: 768px) {
+    .forms-container {
+        flex-direction: column;
+    }
+
+    form {
+        width: 100%;
+    }
+}
+
+/* Bouton de retour */
+.btn-back {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-back:hover {
+    background-color: #0056b3;
+}
+
+.reservation-item {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    background-color: #f9f9f9;
+}
+
+.reservation-item p {
+    margin-bottom: 5px;
+}
+
+.delete-reservation-button {
+    padding: 8px 12px;
+    background-color: #dc3545; /* Couleur rouge pour le bouton de suppression */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.delete-reservation-button:hover {
+    background-color: #c82333; /* Couleur rouge foncé au survol */
+}

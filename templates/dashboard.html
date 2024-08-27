@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donnée</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <img class="logo" src="{{ url_for('static', filename='css/logo.jpeg') }}">
+                <h1>Hotel Clermont Airport</h1>
+                <h2 class="pseudo"><a href="{{url_for('logout')}}">Bonjour {{info['nom']}} !</a></h2>
+                <div class="button-selection">
+                    <div class="href-a">
+                        <a href="{{url_for('reservation')}}">
+                            <div class="btn-div">
+                                <img class="illustration" src="{{ url_for('static', filename='css/news.png') }}">
+                                <p class="new-reservation">Nouvelle reservation</p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="href-a">
+                        <a href="{{url_for('chambre')}}">
+                            <div class="btn-div">
+                                <img class="illustration" src="{{ url_for('static', filename='css/bedroom.jpg') }}">
+                                <p class="new-reservation">Chambre</p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="href-a">
+                        <a href ="{{url_for('edt')}}">
+                            <div class="btn-div">
+                                <img class="illustration" src="{{ url_for('static', filename='css/edt.png') }}">
+                                <p class="new-reservation">Emploie du temps</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="period-selection">
+                <label for="start">Période sélectionnée:</label>
+                <input type="date" id="start" name="start" value="2024-01-01">
+                <span>au</span>
+                <input type="date" id="end" name="end" value="2024-12-31">
+            </div>
+        </header>
+
+        <div class="dashboard">
+            <div class="dashboard-item revenue-total">
+                <img class="illustration" src="{{ url_for('static', filename='css/dollar.jpeg') }}">
+                <h2>Revenue Total</h2>
+                <p id="revenue-total">250,000.00€</p>
+            </div>
+            <div class="dashboard-item rooms-to-prepare">
+                <img class="illustration" src="{{ url_for('static', filename='css/bedroom.jpg') }}">
+                <h2>Nombre de chambre à préparer</h2>
+                <p id="rooms-to-prepare">6</p>
+            </div>
+            <div class="dashboard-item empty-rooms">
+                <img class="illustration" src="{{ url_for('static', filename='css/key.png') }}">
+                <h2>Nombre de chambre vide</h2>
+                <p id="empty-rooms">13</p>
+            </div>
+            <div class="dashboard-item occupied-rooms">
+                <img class="illustration" src="{{ url_for('static', filename='css/people.png') }}">
+                <h2>Nombre de chambre Occupés</h2>
+                <p id="occupied-rooms">41</p>
+            </div>
+            <div class="dashboard-item chart-container small">
+                <h2>Taux d'occupation</h2>
+                <canvas id="occupancy-rate"></canvas>
+            </div>
+            <div class="dashboard-item chart-container wide">
+                <h2>Revenue Par mois chambre</h2>
+                <canvas id="monthly-room-revenue"></canvas>
+            </div>
+            <div class="dashboard-item chart-container">
+                <h2>Planning</h2>
+                <canvas id="planning"></canvas>
+            </div>
+            <div class="dashboard-item chart-container">
+                <h2>Commande Petit dej à J+1</h2>
+                <canvas id="breakfast-orders"></canvas>
+            </div>
+            <div class="dashboard-item chart-container wide">
+                <h2>Revenue par mois global</h2>
+                <canvas id="global-monthly-revenue"></canvas>
+            </div>
+            <div class="dashboard-item chart-container small">
+                <h2>Revenue par mois petit dejeuner</h2>
+                <canvas id="monthly-breakfast-revenue"></canvas>
+            </div>
+
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.logo{
+    width:80px;
+}
+
+.container {
+    max-width: 75%;
+    margin: auto;
+    padding: 15px;
+}
+
+header {
+    padding: 20px;
+    border: 1px solid rgba(0,0,0, 0.25);
+    border-width: thin;
+    border-bottom:none;
+}
+
+.header-top {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.illustration{
+    width:40px;
+    height:40px;
+}
+
+.pseudo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.button-selection {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+}
+
+.period-selection {
+    display: flex;
+    align-items: center;
+}
+
+.period-selection label,
+.period-selection span {
+    margin: 0 5px;
+}
+
+.btn-div {
+    padding: 10px;
+    margin-left: 10px;
+    border: 1px solid rgba(0,0,0, 0.25);
+    border-radius: 20px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.btn-div img {
+    width:20px;
+    height:20px;
+}
+
+.href-a a{
+    text-decoration: none;
+    color: inherit;
+}
+
+.btn-div p{
+    text-decoration: none;
+    color: inherit;
+    margin: 0;
+    font-size: 14px;
+}
+
+
+.dashboard {
+    padding-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    border: 1px solid rgba(0,0,0, 0.25);
+    border-width: thin;
+}
+
+.dashboard-item {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px 	#A0A0A0;
+}
+
+.dashboard-item h2 {
+    margin-top: 0;
+    font-size: 16px;
+    color: #333;
+}
+
+.dashboard-item p {
+    font-size: 24px;
+    color: #666;
+    margin: 10px 0;
+}
+
+.chart-container {
+    height: 200px;
+}
+
+.chart-container.wide {
+    grid-column: span 2;
+}
+
+@media screen and (max-width: 768px) {
+    .dashboard {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-container.small {
+        height: 200px;
+    }
+
+    .chart-container.wide {
+        grid-column: span 1;
+        height: 200px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .dashboard {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .dashboard-item {
+        padding: 20px;
+    }
+
+    .chart-container {
+        height: 150px;
+    }
+
+    .chart-container.small {
+        grid-column: span 1;
+    }
+
+    .chart-container.wide {
+        grid-column: span 2;
+        height: 200px;
+    }
+}
+
+.pseudo a {
+    text-decoration: none;
+    color: inherit;
+}

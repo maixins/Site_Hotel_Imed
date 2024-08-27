@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hotel Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/dashboard.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-top">
+                <img class="logo" src="{{ url_for('static', filename='css/logo.jpeg') }}">
+                <h1>Hotel Clermont Airport</h1>
+                <h2 class="pseudo"><a href="{{url_for('logout')}}">Bonjour {{info['nom']}} !</a></h2>
+                <div class="button-selection">
+                    <div class="href-a">
+                        <a href="{{url_for('reservation')}}">
+                            <div class="btn-div">
+                                <img class="illustration" src="{{ url_for('static', filename='css/news.png') }}">
+                                <p class="new-reservation">Nouvelle reservation</p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="href-a">
+                        <a href="{{url_for('chambre')}}">
+                            <div class="btn-div">
+                                <img class="illustration" src="{{ url_for('static', filename='css/bedroom.jpg') }}">
+                                <p class="new-reservation">Chambre</p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <div class="href-a">
+                        <a href ="{{url_for('edt')}}">
+                            <div class="btn-div">
+                                <img class="illustration" src="{{ url_for('static', filename='css/edt.png') }}">
+                                <p class="new-reservation">Emploie du temps</p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="period-selection">
+                <label for="start">Période sélectionnée:</label>
+                <input type="date" id="start" name="start" value="2024-01-01">
+                <span>au</span>
+                <input type="date" id="end" name="end" value="2024-12-31">
+            </div>
+        </header>
+        <div class="dashboard">
+
+
+        </div>
+    </div>
+</body>
+</html>

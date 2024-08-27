@@ -1,0 +1,105 @@
+/* Global styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    padding-top: 20px;
+}
+
+.container {
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 5px;
+}
+
+h1, h2 {
+    color: #333;
+}
+
+/* Form styles */
+#taskForm {
+    background-color: #f9f9f9;
+    padding: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+#taskForm h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+#taskForm .form-group {
+    margin-bottom: 15px;
+}
+
+#taskForm label {
+    font-weight: bold;
+}
+
+#taskForm input[type="text"],
+#taskForm input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+#taskForm button[type="submit"] {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#taskForm button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Calendar styles */
+#calendar {
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+/* Modal styles */
+.modal-content {
+    border-radius: 5px;
+}
+
+.modal-header {
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px 5px 0 0;
+}
+
+.modal-footer {
+    border-top: none;
+}
+
+/* Additional styling */
+.mt-5 {
+    margin-top: 30px;
+}
+
+.btn-back {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+}
+
+.btn-back:hover {
+    background-color: #0056b3;
+}

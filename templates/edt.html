@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Planning des Tâches</title>
+    <!-- Inclusion de FullCalendar CSS -->
+    <link href='https://cdn.jsdelivr.net/npm/fullcalendar/main.css' rel='stylesheet' />
+    <!-- Inclusion de FullCalendar JavaScript -->
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar/main.js'></script>
+    <!-- Inclusion de jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Inclusion de Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Inclusion de Bootstrap JavaScript -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/edt.css') }}">
+</head>
+<body>
+
+    <a href="{{ url_for('index') }}" class="btn-back">Retour au dashboard</a>
+    <div class="container mt-5">
+        <h1 class="text-center">Planning des Tâches</h1>
+
+        <div class="mt-5">
+            <h2>Ajouter une tâche</h2>
+            <form id="taskForm" action="{{ url_for('add_task') }}" method="post">
+                <div class="form-group">
+                    <label for="employee">Employé</label>
+                    <select name="employee" id="employee" class="form-control" required>
+                        {% for personnel in info["personnels"] %}
+                            <option value="{{ personnel }}">{{ personnel }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="taskTitle">Titre de la tâche</label>
+                    <input type="text" name="taskTitle" id="taskTitle" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description de la tâche</label>
+                    <input type="text" name="description" id="description" class="form-control">
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" name="date" id="date" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Ajouter la tâche</button>
+            </form>
+        </div>
+
+        <!-- Div pour afficher le calendrier -->
+        <div id="calendar"></div>
+
+        <!-- Modal d'affichage de la description -->
+        <div class="modal fade" id="taskDescriptionModal" tabindex="-1" role="dialog" aria-labelledby="taskDescriptionModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="taskDescriptionModalLabel">Description de la tâche</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <p id="taskDescriptionContent"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="deleteTaskButton">Supprimer</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('date').valueAsDate = new Date();
+
+document.addEventListener('DOMContentLoaded', function() {
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        events: '/get_tasks',
+        editable: true,
+        droppable: true,
+        eventClick: function(info) {
+            const description = info.event.extendedProps.description;
+            if (description) {
+                $('#taskDescriptionContent').text(description);
+                $('#deleteTaskButton').attr('data-task-id', info.event.id);
+                $('#taskDescriptionModal').modal('show');
+            }
+        },
+        eventContent: function(arg) {
+            const div = document.createElement('div');
+            div.innerHTML = `<b>${arg.timeText}</b><br>${arg.event.title}`;
+            return { domNodes: [div] };
+        },
+        eventDidMount: function(info) {
+            const eventEl = info.el;
+            eventEl.addEventListener('contextmenu', function(e) {
+                e.preventDefault();
+                const taskId = info.event.id;
+                $('#confirmDeleteModal').modal('show');
+                $('#confirmDeleteButton').off('click').on('click', function() {
+                    deleteTask(taskId);
+                    $('#confirmDeleteModal').modal('hide');
+                });
+            });
+        },
+        eventDrop: function(info) {
+            const taskId = info.event.id;
+            const newDate = new Date(info.event.start.getTime() - (info.event.start.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+
+            $.ajax({
+                url: '/update_task_date',
+                method: 'POST',
+                data: {
+                    taskId: taskId,
+                    date: newDate
+                },
+                success: function(response) {
+                    console.log('Date de la tâche mise à jour avec succès.');
+                },
+                error: function(err) {
+                    console.error('Erreur lors de la mise à jour de la date de la tâche:', err);
+                    info.revert(); // Annuler le déplacement en cas d'erreur
+                }
+            });
+        }
+    });
+    calendar.render();
+
+    $('#deleteTaskButton').click(function() {
+        const taskId = $(this).attr('data-task-id');
+        deleteTask(taskId);
+        $('#taskDescriptionModal').modal('hide');
+    });
+
+    function deleteTask(taskId) {
+        $.ajax({
+            url: '/delete_task',
+            method: 'POST',
+            data: { taskId: taskId },
+            success: function(response) {
+                console.log('Tâche supprimée avec succès.');
+                calendar.refetchEvents();
+            },
+            error: function(err) {
+                console.error('Erreur lors de la suppression de la tâche:', err);
+            }
+        });
+    }
+});
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Réservation de Chambre</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/reservation.css') }}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <a href="{{ url_for('index') }}" class="btn-back">Retour au dashboard</a>
+    <div class="container">
+        <h2>Réservation de Chambre</h2>
+
+        <!-- Étape 1: Sélection de la période -->
+        <div id="step1">
+            <form id="reservationPeriodForm">
+                <h3>1. Sélectionnez la période</h3>
+                <div class="form-group">
+                    <label for="start_date">Date de début :</label>
+                    <input type="date" id="start_date" name="start_date" required>
+                </div>
+                <div class="form-group">
+                    <label for="end_date">Date de fin :</label>
+                    <input type="date" id="end_date" name="end_date" required>
+                </div>
+                <input type="submit" value="Vérifier la disponibilité">
+            </form>
+        </div>
+
+        <!-- Étape 2: Affichage des chambres disponibles par catégorie -->
+        <div id="step2" style="display: none;">
+            <h3>2. Disponibilité des chambres par catégorie</h3>
+            <div id="roomCategories"></div>
+            <button id="goToStep3">Sélectionner ou ajouter un client</button>
+        </div>
+
+        <!-- Étape 3: Sélection ou ajout d'un client -->
+        <div id="step3" style="display: none;">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Rechercher par nom ou prénom...">
+                <div id="searchResults" class="search-results"></div>
+            </div>
+            <form id="addClientForm" action="{{ url_for('add_client') }}" method="post">
+                <h3>Ajout d'un client</h3>
+                <div class="form-group">
+                    <label for="nom">Nom :</label>
+                    <input type="text" id="nom" name="nom" required>
+                </div>
+                <div class="form-group">
+                    <label for="prenom">Prénom :</label>
+                    <input type="text" id="prenom" name="prenom" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">Date de naissance :</label>
+                    <input type="date" id="date" name="date_naissance" required>
+                </div>
+                <div class="form-group">
+                    <label for="lieu">Lieu de naissance :</label>
+                    <input type="text" id="lieu" name="lieu_naissance" required>
+                </div>
+                <div class="form-group">
+                    <label for="num">Numéro de téléphone :</label>
+                    <input type="text" id="num" name="num_tel" required>
+                </div>
+                <div class="form-group">
+                    <label for="mail">Mail :</label>
+                    <input type="email" id="mail" name="mail" required>
+                </div>
+                <input type="submit" value="Ajouter">
+            </form>
+
+            <form id="reservationForm" action="{{ url_for('reserve_room') }}" method="post">
+                <h3>3. Réservation de chambre</h3>
+                <input type="hidden" id="selected_client_id" name="client_id">
+                <div id="selectedClientInfo"></div>
+                <div id="selectedRoomInfo"></div>
+                <input type="submit" value="Réserver">
+            </form>
+        </div>
+
+        <!-- Section des réservations futures -->
+        <h3 style="margin-top:10px">Réservations en cours</h3>
+        <div class="future-reservations">
+            <div id="futureReservationsList">
+                {% for reservation in info['reservations_futures'] %}
+                <div class="reservation-item">
+                    <p>Num de réservation: {{ reservation['id'] }}</p>
+                    <p>Client: {{ reservation['client'] }}</p>
+                    <p>Date de la réservation: {{ reservation['date_reservation'] }}</p>
+                    <p>Début: {{ reservation['start_date'] }}</p>
+                    <p>Fin: {{ reservation['end_date'] }}</p>
+                    <button class="delete-reservation-button" data-id="{{ reservation['id'] }}">Supprimer</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Étape 1: Vérifier la disponibilité des chambres
+            $('#reservationPeriodForm').on('submit', function (event) {
+                event.preventDefault(); // Empêcher la soumission classique du formulaire
+
+                var startDate = $('#start_date').val();
+                var endDate = $('#end_date').val();
+
+                $.ajax({
+                    url: '/check_availability',
+                    method: 'POST',
+                    data: {
+                        start_date: startDate,
+                        end_date: endDate
+                    },
+                    success: function (categories) {
+                        displayRoomCategories(categories);
+                        $('#step1').hide();
+                        $('#step2').show();
+                    },
+                    error: function (err) {
+                        console.error('Error fetching available rooms:', err);
+                    }
+                });
+            });
+
+            function displayRoomCategories(categories) {
+                var categoriesDiv = $('#roomCategories');
+                categoriesDiv.empty();
+
+                categories.forEach(function (category) {
+                    var categoryDiv = $('<div class="category-item">');
+                    categoryDiv.append('<p><strong>Catégorie:</strong> ' + category.type + '</p>');
+                    categoryDiv.append('<p><strong>Disponibilité:</strong> ' + category.available_count + ' chambre(s)</p>');
+                    var selectButton = $('<button class="select-room-category-button">Sélectionner cette catégorie</button>');
+                    selectButton.data('category-type', category.type);
+                    selectButton.on('click', function () {
+                        selectRoomCategory($(this).data('category-type'));
+                    });
+                    categoryDiv.append(selectButton);
+                    categoriesDiv.append(categoryDiv);
+                });
+            }
+
+            function selectRoomCategory(categoryType) {
+                $('#selectedRoomInfo').html('<p>Catégorie sélectionnée: ' + categoryType + '</p>');
+                $('#step2').hide();
+                $('#step3').show();
+            }
+
+            // Étape 3: Recherche de clients
+            $('#searchInput').on('input', function () {
+                var query = $(this).val().trim();
+                if (query.length > 0) {
+                    $.ajax({
+                        url: '/search_client',
+                        method: 'GET',
+                        data: { query: query },
+                        success: function (clients) {
+                            displaySearchResults(clients);
+                        },
+                        error: function (err) {
+                            console.error('Error fetching clients:', err);
+                        }
+                    });
+                } else {
+                    $('#searchResults').empty();
+                }
+            });
+
+            function displaySearchResults(clients) {
+                var resultsDiv = $('#searchResults');
+                resultsDiv.empty();
+
+                clients.forEach(function (client) {
+                    var clientDiv = $('<div class="search-result">');
+                    clientDiv.append('<p><strong>Nom:</strong> ' + client.nom + '</p>');
+                    clientDiv.append('<p><strong>Prénom:</strong> ' + client.prenom + '</p>');
+                    clientDiv.append('<p><strong>Date:</strong> ' + client.date_naissance + '</p>');
+                    var selectButton = $('<button class="select-client-button">Sélectionner</button>');
+                    selectButton.data('client-id', client.id);
+                    selectButton.on('click', function () {
+                        selectClient(client);
+                    });
+                    clientDiv.append(selectButton);
+                    clientDiv.append('<hr>');
+
+                    resultsDiv.append(clientDiv);
+                });
+            }
+
+            function selectClient(client) {
+                $('#selected_client_id').val(client.id);
+
+                // Afficher les informations du client sélectionné
+                var selectedClientInfo = $('<div class="selected-client-info">');
+                selectedClientInfo.append('<p><strong>Nom:</strong> ' + client.nom + '</p>');
+                selectedClientInfo.append('<p><strong>Prénom:</strong> ' + client.prenom + '</p>');
+                selectedClientInfo.append('<p><strong>Date:</strong> ' + client.date_naissance + '</p>');
+                $('#selectedClientInfo').html(selectedClientInfo);
+
+                // Réinitialiser le formulaire de recherche
+                $('#searchResults').empty();
+                $('#searchInput').val('');
+            }
+
+            // Ajouter un nouveau client
+            $('#addClientForm').submit(function (event) {
+                event.preventDefault(); // Empêcher la soumission classique du formulaire
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        alert('Client ajouté avec succès.');
+                        $('#searchInput').trigger('input'); // Recharger la liste des clients
+                    },
+                    error: function (err) {
+                        console.error('Error adding client:', err);
+                    }
+                });
+            });
+
+            // Réserver une chambre
+            $('#reservationForm').submit(function (event) {
+                event.preventDefault(); // Empêcher la soumission classique du formulaire
+
+                var clientId = $('#selected_client_id').val();
+                var roomCategory = $('#selectedRoomInfo').text().replace('Catégorie sélectionnée: ', '');
+                var startDate = $('#start_date').val();
+                var endDate = $('#end_date').val();
+
+                $.ajax({
+                    url: $(this).attr('action'),
+                    method: 'POST',
+                    data: {
+                        client_id: clientId,
+                        room_category: roomCategory,
+                        start_date: startDate,
+                        end_date: endDate
+                    },
+                    success: function (response) {
+                        alert('Réservation effectuée avec succès.');
+                        location.reload(); // Recharger la page pour mettre à jour les réservations
+                    },
+                    error: function (err) {
+                        console.error('Error reserving room:', err);
+                    }
+                });
+            });
+
+            // Suppression d'une réservation
+            $(document).on('click', '.delete-reservation-button', function () {
+                var reservationId = $(this).data('id');
+
+                $.ajax({
+                    url: '/delete_reservation',
+                    method: 'POST',
+                    data: { id: reservationId },
+                    success: function (response) {
+                        alert('Réservation supprimée avec succès.');
+                        location.reload(); // Recharger la page pour mettre à jour les réservations
+                    },
+                    error: function (err) {
+                        console.error('Error deleting reservation:', err);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
